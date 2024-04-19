@@ -1,0 +1,25 @@
+.avatar img{
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    white-space: nowrap;
+    vertical-align: bottom;
+    border-radius: 1000px;
+}
+
+.view-img-rounded {
+    border-radius: 0.25rem;
+}
+.view-img-bordered {
+    border: 3px solid #adb5bd;
+    padding: 3px;
+}
+.bb-1 {
+    border-bottom: 1px solid #e4eaec;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.font-weight-700 {
+    font-weight: 700;
+}
