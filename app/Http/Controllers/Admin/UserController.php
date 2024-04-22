@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserFile;
 use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Facades\Auth;
@@ -64,14 +65,22 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */ 
     public function create()
+
+    
+
+
     {
+        
         $data['title']      = 'User';
         $data['sub_title']  = 'Create New User';
         $data['breadcrumb'] = 'Create';
         $data['action']     = route('admin.user.store');
         $data['method']     = 'post';
+        
         return view('backend.user.create', $data); 
     }
+
+    
 
     /**
      * Store a newly created resource in storage.
@@ -86,6 +95,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
             // 'image_file' => 'required|image|mimes:jpeg,png,jpg',
+            'files.*' => 'required|file|mimes:jpg,jpeg,png,pdf',
             'status' => 'required'
         ]); 
 
@@ -114,30 +124,68 @@ class UserController extends Controller
                 $constraint->aspectRatio();
             })->save($thumbpath.'/'.$filename);
 
-            $objUser->image_url =  $filename;
+            $objUser->image_url =  $filename; 
         }
+
+
+        
 
         $objUser->save();
 
-        if($objUser->id)
-            return redirect()->route('admin.user.index')->with('message', SUCOPEN.'Successfully created new user.'.CLOSE);
-        else
-            return redirect()->route('admin.user.index')->with('message', ERROPEN.'Failed to created new user.'.CLOSE);
-    }
+        if($objUser->id) {
 
+            $user_id = $objUser->id;
+
+            
+            $fileData = [];
+            if ($files = $request->file('files')) {
+
+                foreach($files as $key => $file) {
+
+                    $originalFilename = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = $key.'-'.time(). '.' .$extension;
+
+                    $path = 'uploads/userdocs/' . $originalFilename;
+                    $file->move(public_path('uploads\userdocs'), $filename);
+
+                    $fileData[] = [
+                        'user_id' => $user_id,
+                        'file_name' => $originalFilename,
+                        'file_path' => $path,
+                    ];
+                }
+
+            }
+
+            UserFile::insert($fileData);
+    
+            // Redirect with success message
+            return redirect()->route('admin.user.index')->with('message', SUCOPEN.'Successfully created new user.'.CLOSE);
+        }else {
+            // Redirect with error message if user creation failed
+            return redirect()->route('admin.user.index')->with('message', ERROPEN.'Failed to create new user.'.CLOSE);
+        }
+    }
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\r  $r
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
+        // $user_id = Auth::id();
+        // $userFiles = UserFile::where('user_id', $user_id)->get();
         //
         $data['title']      = 'User';
-        $data['sub_title']  = 'User Details';
+        $data['sub_title']  = 'User Details'; 
         $data['breadcrumb'] = 'View';
+        // $data['userFiles'] = $userFiles;
         $data['user']   = User::findOrFail($id);
+        $data['files'] = $data['user']->files;
+
         return view('backend.user.view', $data);
     }
 
@@ -155,6 +203,8 @@ class UserController extends Controller
         $data['action']     = route('admin.user.update', $id);
         $data['method']     = 'post';
         $data['user']       = User::findOrFail($id);
+        $data['userFiles'] = UserFile::where('user_id', $id)->get();
+
         return view('backend.user.edit', $data); 
     }
 
@@ -170,7 +220,8 @@ class UserController extends Controller
         $this->validate($request, [
             'name'  => 'required|max:100',
             'email' => 'email|unique:users,email',
-            'status' => 'required'
+            'status' => 'required',
+            'files.*' => 'required|file|mimes:jpg,jpeg,png,pdf',
         ]); 
 
         // dd($request);
@@ -211,7 +262,50 @@ class UserController extends Controller
             $objUser->image_url = "";
         }
 
+        if ($request->has('remove_files')) {
+            foreach ($request->input('remove_files') as $fileId) {
+                // Find the file by its ID
+                $file = UserFile::find($fileId);
+                if ($file) {
+                    // Delete the file from storage
+                    Storage::delete($file->file_path);
+                    // Delete the record from the database
+                    $file->delete();
+                }
+            }
+        }
+    
+
         $objUser->save();
+
+        if($objUser->id) {
+
+            $user_id = $objUser->id;
+
+            $fileData = [];
+            if ($files = $request->file('files')) {
+
+                foreach($files as $key => $file) {
+
+                    $originalFilename = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = $key.'-'.time(). '.' .$extension;
+
+                    $path = 'uploads/userdocs/' . $originalFilename;
+                    $file->move(public_path('uploads\userdocs'), $filename);
+
+                    $fileData[] = [
+                        'user_id' => $user_id,
+                        'file_name' => $originalFilename,
+                        'file_path' => $path,
+                    ];
+                }
+
+            }
+
+            UserFile::insert($fileData);
+
+
 
         if($temp_image_url != "")
         {
@@ -221,11 +315,13 @@ class UserController extends Controller
                 File::delete(public_path('uploads/user/thumbs/').$temp_image_url);
         }
 
-        if($objUser->id)
+        if($objUser->id) {
             return redirect()->route('admin.user.index')->with('message', SUCOPEN.'Successfully updated user.'.CLOSE);
-        else
+        }else{
             return redirect()->route('admin.user.index')->with('message', ERROPEN.'Failed to update user.'.CLOSE);
+        }
     }
+}
 
     /**
      * Remove the specified resource from storage.
@@ -233,6 +329,8 @@ class UserController extends Controller
      * @param  \App\Models\r  $r
      * @return \Illuminate\Http\Response
      */
+
+
     public function destroy($id)
     {
         $objUser = User::findOrFail($id);
@@ -264,4 +362,25 @@ class UserController extends Controller
         $data['user']   = User::findOrFail($id);
         return view('backend.user.profile-view', $data);
     }
+
+    public function removeFile($userId, $fileId)
+    {
+        // Logic to remove the file
+        // For example:
+        $file = UserFile::find($fileId);
+        if ($file) {
+            // Delete the file from storage
+            Storage::delete($file->file_path);
+            
+            // Delete the record from the database
+            $file->delete();
+
+            // Redirect back with success message
+            return redirect()->back()->with('message', 'File removed successfully.');
+        } else {
+            // Redirect back with error message
+            return redirect()->back()->with('error', 'File not found.');
+        }
+    }
+
 }

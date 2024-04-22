@@ -1,0 +1,74 @@
+
+/* Style the input[type="file"] */
+.custom-file-input {
+    color: transparent;
+}
+
+/* Style the "Choose file" button */
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-input::before {
+    content: 'Choose files';
+    display: inline-block;
+    background-color: rgb(116, 188, 116); /* Change the color to green */
+    color: white; /* Change the text color to white */
+    padding: 8px 20px; /* Adjust padding as needed */
+    border-radius: 5px; /* Add rounded corners */
+    cursor: pointer;
+}
+
+.custom-file-input:hover::before {
+    background-color: rgb(77, 160, 77); /* Change the background color on hover */
+}
+
+.custom-file-upload {
+    display: inline-block;
+    cursor: pointer;
+    padding: 8px 20px;
+    background-color: rgb(87, 195, 87);
+    color: white;
+    border-radius: 5px;
+}
+
+.custom-file-upload span {
+    margin-right: 10px;
+}
+
+#file-count {
+    margin-top: 10px;
+    color: rgb(87, 192, 87);
+    font-weight: bold;
+}
+
+#selected-files {
+    margin-top: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.file-name {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.file-remove {
+    cursor: pointer;
+    color: #888;
+}
+
+.file-remove:hover {
+    color: #f00;
+}

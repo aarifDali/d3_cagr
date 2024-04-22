@@ -18,8 +18,8 @@ Route::group(['prefix' =>'admin','namespace' => 'Admin', 'as'=>'admin.', 'middle
 	Route::resource('user','UserController');
 	Route::get('user/load_data', 'UserController@loadData')->name('user.load_data');
 	Route::get('user/profile-view/{id}/', 'UserController@profileView')->name('user.profile_view');
-
 });
+
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.', 'middleware' => ['auth']], function(){
 	Route::resource('category','CategoryController');

@@ -10,7 +10,7 @@
 @endsection
 
 {{-- page content --}} 
-@section('content')
+@section('content') 
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
@@ -208,7 +208,54 @@
                                                 @endif
                                             </div>
                                             <!--/row-->
-                                        </div>
+                                            <!-- <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group ">
+                                                    <label class="control-label col-lg-3">Existing Files :</label>
+                                                    <ul>
+                                                    <label for="">Check the box and submit to remove the files</label>
+
+                                                        @foreach($userFiles as $file)
+                                                            <li>
+                                                                <input type="checkbox" name="removed_files[]" value="{{ $file->id }}">
+                                                                <span>{{ $file->file_name }}</span>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                    </div>
+                                                </div> -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-lg-3">Existing Files:</label>
+                                                            <h5>*check the files to be removed</h5>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                            <!-- <label for="remove_all">Check the files to be removed</label> -->
+                                                                    
+                                                            <ul>    
+                                                                @foreach($userFiles as $file)
+                                                                <li>
+                                                                    <input type="checkbox" name="remove_files[]" value="{{ $file->id }}">
+                                                                    <span>{{ $file->file_name }}</span>
+                                                                </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                              
+                                                    <div class="col-md-6">
+                                                        <div class="form-group {{ $errors->has('files') ? 'has-error' : 'has-success' }}">
+                                                            <label class="control-label col-lg-3">Add Files</label>
+                                                            <input type="file" id="file-input" name="files[]" multiple onchange="updateFiles()">
+                                                        <div id="selected-files">
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            </div>
                                         <div class="form-actions">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -343,5 +390,37 @@
         $("#nav-user a .arrow").addClass("open");
         $("#nav-user-menu").css("display","block");
     });
+
+    // Listen for click events on "Remove" buttons
+    document.querySelectorAll('.remove-file-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Get the user ID and file ID from the data attributes
+            const userId = this.getAttribute('data-user-id');
+            const fileId = this.getAttribute('data-file-id');
+
+            // Send a DELETE request to remove the file
+            fetch(`/admin/user/${userId}/files/${fileId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Reload the page or update the UI as needed
+                    window.location.reload();
+                } else {
+                    // Handle error response
+                    console.error('Failed to remove file');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
 </script>
 @endsection		

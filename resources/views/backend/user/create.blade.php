@@ -4,9 +4,11 @@
 {{-- page css --}} 
 @section('page-css')
 <link href="{{asset('backend/layouts/layout/css/layout.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('backend/layouts/layout/css/file.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('backend/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('backend/css/bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('backend/css/formValidation.min.css')}}" rel="stylesheet" type="text/css" />
+<script src="{{ asset('backend/layouts/layout/js/file.js') }}"></script>
 @endsection
 
 {{-- page content --}}
@@ -22,6 +24,7 @@
                     <a href="{{route('admin.dashboard')}}">Home</a>
                     <i class="fa fa-circle"></i>
                 </li>
+                
                 <li>
                     <a href="{{route('admin.user.index')}}">{{ $title }}</a>
                     <i class="fa fa-circle"></i>
@@ -34,7 +37,7 @@
         <!-- END PAGE BAR -->
         <!-- BEGIN PAGE TITLE-->
         <h1 class="page-title"> {{ $title }}
-            <small></small>
+            <small></small> 
         </h1> 
         <!-- END PAGE TITLE-->
         <!-- END PAGE HEADER-->
@@ -187,6 +190,17 @@
                                                 </div>
                                             </div>
                                             <!--/row-->
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group {{ $errors->has('files') ? 'has-error' : 'has-success' }}">
+                                                        <label class="control-label col-lg-3">Documents</label>
+                                                        <input type="file" id="file-input" name="files[]" multiple onchange="updateFiles()">
+                                                        <div id="selected-files">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/row-->
                                         </div>
                                         <div class="form-actions">
                                             <div class="row">
@@ -317,5 +331,24 @@
         $("#nav-user a .arrow").addClass("open");
         $("#nav-user-menu").css("display","block");
     });
+
+
+    function updateFiles() {
+        var files = document.getElementById('file-input').files;
+        var filesContainer = document.getElementById('selected-files');
+        filesContainer.innerHTML = ''; // Clear previous files
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = '<span class="file-name">' + file.name + '</span> <button class="file-remove" onclick="removeFile(this)">x</button>';
+            filesContainer.appendChild(fileItem);
+        }
+    }
+
+    function removeFile(button) {
+        button.parentNode.remove(); // Remove the file item from the container
+    }
 </script>
 @endsection

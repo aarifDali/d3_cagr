@@ -84,22 +84,32 @@
 										                              <div class="col-sm-1 text-right hidden-xs-down">:</div>
 										                              <div class="col-sm-8">{{ $user->status == 1 ? 'Active' : 'Inactive' }}</div>
 										                          </div>
-										                      </div>
-										                      <div class="col-sm-4">
-										                        <div class="col-sm-12 text-right">
-										                            @if($user->image_url && file_exists(public_path('uploads/user/'.$user->image_url)))
-										                                <a href="{{ asset('uploads/user/'.$user->image_url) }}" class="image-link">
-										                                    <img loading="lazy"  src="{{ asset('uploads/user/thumbs/'.$user->image_url) }}" alt="" class="img-responsive view-img-rounded view-img-bordered img-bordered-primary" width="150px" >
-										                                </a>
-										                            @else
-										                                <img src="{{ asset(DUMMY) }}" class="img-rounded img-bordered img-bordered-primary" width="150px" alt="..." />
-										                            @endif
+                                                                
 										                        </div>
-
-										                      </div>
+										                        <div class="col-sm-4">
+                                                                    <div class="col-sm-12 text-right">
+                                                                        @if($user->image_url && file_exists(public_path('uploads/user/'.$user->image_url)))
+                                                                            <a href="{{ asset('uploads/user/'.$user->image_url) }}" class="image-link">
+                                                                                <img loading="lazy"  src="{{ asset('uploads/user/thumbs/'.$user->image_url) }}" alt="" class="img-responsive view-img-rounded view-img-bordered img-bordered-primary" width="150px" >
+                                                                            </a>
+                                                                        @else
+                                                                            <img src="{{ asset(DUMMY) }}" class="img-rounded img-bordered img-bordered-primary" width="150px" alt="..." />
+                                                                        @endif
+                                                                    </div>
+										                        </div>
                                                             </div>
                                                             <!--/row-->
-                                                            
+                                                            <div class="row">
+                                                                <div class="col-sm-3 font-weight-700">Uploaded Files :</div>
+                                                                    <div class="col-md-12">
+                                                                        <ul>
+                                                                            @foreach($files as $file)
+                                                                                <li>{{ $file->file_name }}</li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </form>
                                                     <!-- END FORM-->
