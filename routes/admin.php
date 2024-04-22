@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\UserController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -19,6 +19,9 @@ Route::group(['prefix' =>'admin','namespace' => 'Admin', 'as'=>'admin.', 'middle
 	Route::get('user/load_data', 'UserController@loadData')->name('user.load_data');
 	Route::get('user/profile-view/{id}/', 'UserController@profileView')->name('user.profile_view');
 });
+// Route::get('download/{id}', 'UserController@download')->name('user.download');
+Route::get('download/{id}', [UserController::class, 'downloadFile'])->name('user.download');
+
 
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.', 'middleware' => ['auth']], function(){

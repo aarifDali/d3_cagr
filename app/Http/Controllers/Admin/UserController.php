@@ -292,7 +292,7 @@ class UserController extends Controller
                     $filename = $key.'-'.time(). '.' .$extension;
 
                     $path = 'uploads/userdocs/' . $originalFilename;
-                    $file->move(public_path('uploads\userdocs'), $filename);
+                    $file->move(public_path('uploads\userdocs'), $originalFilename);
 
                     $fileData[] = [
                         'user_id' => $user_id,
@@ -381,6 +381,18 @@ class UserController extends Controller
             // Redirect back with error message
             return redirect()->back()->with('error', 'File not found.');
         }
+    }
+
+    public function downloadFile($id) {
+       
+        $path = UserFile::where('id', $id)->value('file_name');
+        
+        $filePath = public_path('uploads/userdocs/' . $path);
+        if (!file_exists($filePath)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
+
+        return response()->download($filePath);
     }
 
 }

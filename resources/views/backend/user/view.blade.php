@@ -104,7 +104,9 @@
                                                                     <div class="col-md-12">
                                                                         <ul>
                                                                             @foreach($files as $file)
-                                                                                <li>{{ $file->file_name }}</li>
+                                                                                <li>{{ $file->file_name }}
+                                                                                <a href="{{ route('user.download', $file->id) }}">download</a></td>
+                                                                                </li>
                                                                             @endforeach
                                                                         </ul>
                                                                     </div>
