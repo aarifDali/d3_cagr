@@ -181,7 +181,6 @@ class UserController extends Controller
         $data['sub_title']  = 'User Details'; 
         $data['breadcrumb'] = 'View';
         $data['user']   = User::findOrFail($id);
-        $data['files'] = $data['user']->files;
 
         return view('backend.user.view', $data);
     }
@@ -200,7 +199,6 @@ class UserController extends Controller
         $data['action']     = route('admin.user.update', $id);
         $data['method']     = 'post';
         $data['user']       = User::findOrFail($id);
-        $data['userFiles'] = UserFile::where('user_id', $id)->get();
 
         return view('backend.user.edit', $data); 
     }
@@ -221,7 +219,6 @@ class UserController extends Controller
             'files.*' => 'required|file|mimes:jpg,jpeg,png,pdf',
         ]); 
 
-        // dd($request);
 
         $temp_image_url="";
         $objUser = User::findOrFail($id);
@@ -360,7 +357,7 @@ class UserController extends Controller
         return view('backend.user.profile-view', $data);
     }
 
-    public function removeFile($userId, $fileId)
+    public function removeFile($fileId)
     {
         // Logic to remove the file
         // For example:

@@ -207,23 +207,6 @@
                                                 </div>
                                                 @endif
                                             </div>
-                                            <!--/row-->
-                                            <!-- <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group ">
-                                                    <label class="control-label col-lg-3">Existing Files :</label>
-                                                    <ul>
-                                                    <label for="">Check the box and submit to remove the files</label>
-
-                                                        @foreach($userFiles as $file)
-                                                            <li>
-                                                                <input type="checkbox" name="removed_files[]" value="{{ $file->id }}">
-                                                                <span>{{ $file->file_name }}</span>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                    </div>
-                                                </div> -->
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -233,10 +216,10 @@
                                                             
                                                             
                                                         
-                                                            <!-- <label for="remove_all">Check the files to be removed</label> -->
+
                                                                     
                                                             <ul>    
-                                                                @foreach($userFiles as $file)
+                                                                @foreach($user->files as $file)
                                                                 <li>
                                                                     <input type="checkbox" name="remove_files[]" value="{{ $file->id }}">
                                                                     <span>{{ $file->file_name }}</span>

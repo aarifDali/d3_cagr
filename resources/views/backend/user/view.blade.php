@@ -103,7 +103,7 @@
                                                                 <div class="col-sm-3 font-weight-700">Uploaded Files :</div>
                                                                     <div class="col-md-12">
                                                                         <ul>
-                                                                            @foreach($files as $file)
+                                                                            @foreach ($user->files as $file)
                                                                                 <li>{{ $file->file_name }}
                                                                                 <a href="{{ route('user.download', $file->id) }}">download</a></td>
                                                                                 </li>
