@@ -176,13 +176,10 @@ class UserController extends Controller
 
     public function show($id)
     {
-        // $user_id = Auth::id();
-        // $userFiles = UserFile::where('user_id', $user_id)->get();
-        //
+        
         $data['title']      = 'User';
         $data['sub_title']  = 'User Details'; 
         $data['breadcrumb'] = 'View';
-        // $data['userFiles'] = $userFiles;
         $data['user']   = User::findOrFail($id);
         $data['files'] = $data['user']->files;
 
